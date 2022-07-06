@@ -26,9 +26,10 @@ module Outputs
   end
 
   def show_state
+    puts
+    puts "   #{@correct_guesses.join('')}"
     puts "Guessed letters: #{@guessed_letters.join(',')}"
     puts "Wrong guesses:   #{@wrong_guesses.join(',')}"
-    puts "Correct guesses: #{@correct_guesses.join('')}"
   end
 
   def win

@@ -2,9 +2,11 @@
 
 require 'json'
 require_relative 'outputs'
+require_relative 'hangman'
 
 class Game
   include Outputs
+  include Hangman
   attr_accessor :word, :guess, :guessed_letters, :wrong_guesses, :correct_guesses, :guess_count
 
   def initialize
@@ -27,12 +29,17 @@ class Game
       @correct_guesses << '_'
     end
     load_or_new
+    hangman_case
+    puts "   #{@correct_guesses.join('')}"
     play_turn
   end
 
   def play_turn
+    
     prompt
     evaluate_guess
+    system "cls" || "clear"
+    hangman_case
     show_state if @game_won == false && @game_lost == false
     play_turn if @game_won == false && @game_lost == false
   end
