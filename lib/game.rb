@@ -107,7 +107,7 @@ class Game
       give_up
     else
       @guess = player_input
-      @guessed_letters << player_input
+      @guessed_letters << player_input unless @guessed_letters.include?(player_input)
     end
     if @wrong_guesses.include?(@guess)
     already_guessed unless player_input.downcase == 'save'
