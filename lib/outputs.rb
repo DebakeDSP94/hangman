@@ -8,7 +8,7 @@ module Outputs
   end
 
   def give_up
-    puts "The secret word is #{word}"
+    puts "The secret word is #{@word}"
   end
 
   def instructions
@@ -28,6 +28,7 @@ module Outputs
   def show_state
     puts
     puts "   #{@correct_guesses.join('')}"
+    puts
     puts "Guessed letters: #{@guessed_letters.join(',')}"
     puts "Wrong guesses:   #{@wrong_guesses.join(',')}"
   end
@@ -38,7 +39,10 @@ module Outputs
   end
 
   def lose 
-    puts "You have failed to guess the secret word '#{word}'"
+    puts
+    puts "   #{@correct_guesses.join('')}"
+    puts
+    puts "You have failed to guess the secret word '#{@word}'"
   end
 
   def already_guessed

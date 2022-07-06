@@ -35,12 +35,10 @@ class Game
   end
 
   def play_turn
-    
     prompt
     evaluate_guess
-    system "cls" || "clear"
     hangman_case
-    show_state if @game_won == false && @game_lost == false
+    show_state if @game_won == false
     play_turn if @game_won == false && @game_lost == false
   end
 
@@ -54,6 +52,7 @@ class Game
   end
 
   def check_for_win
+    system("cls") || system("clear")
     @game_won = true if @word_arr == @correct_guesses
     @game_lost = true if @guess_count == 0
     win if @game_won

@@ -71,29 +71,29 @@ module Hangman
   end
 
   def frame_7
-    puts "   ____"
-    puts "  |   |"
-    puts "  o   |"
-    puts "--|-- |"
-    puts "      |"
-    puts "______|"
+    puts "      ____"
+    puts "     |   |"
+    puts "     o   |"
+    puts "   --|-- |"
+    puts "         |"
+    puts "   ______|"
   end
 
   def frame_8
-    puts "   ____"
-    puts "  |   |"
-    puts "  o   |"
-    puts "--|-- |"
-    puts " /    |"
-    puts "______|"
+    puts "      ____"
+    puts "     |   |"
+    puts "     o   |"
+    puts "   --|-- |"
+    puts "    /    |"
+    puts "   ______|"
   end
 
   def frame_9
-    puts "     ____"
-    puts "    |   |"
-    puts "    o   |"
-    puts "  --|-- |"
-    puts "   / \\  |"
-    puts "  ______|"
+    puts "      ____"
+    puts "     |   |"
+    puts "     o   |"
+    puts "   --|-- |"
+    puts "    / \\  |"
+    puts "   ______|"
   end
 end
