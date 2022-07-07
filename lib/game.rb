@@ -3,10 +3,12 @@
 require 'json'
 require_relative 'outputs'
 require_relative 'hangman'
+require_relative 'save_load'
 
 class Game
   include Outputs
   include Hangman
+  include Save_load
   attr_accessor :word, :guess, :guessed_letters, :wrong_guesses, :correct_guesses, :guess_count
 
   def initialize
@@ -19,13 +21,14 @@ class Game
     @guess_count = 8
     @game_won = false
     @game_lost = false
+    @saved = false
   end
 
   def play
     welcome
     instructions
     select_word
-    word.length.times do
+    @word.length.times do
       @correct_guesses << '_'
     end
     load_or_new
@@ -39,7 +42,7 @@ class Game
     evaluate_guess
     hangman_case
     show_state if @game_won == false
-    play_turn if @game_won == false && @game_lost == false
+    play_turn if @game_won == false && @game_lost == false && @saved == false
   end
 
   def evaluate_guess
@@ -84,55 +87,38 @@ class Game
     puts "new game"
   end
 
-  def load_game
-    puts "load game: select a saved game to load"
-    saved_games = Dir.glob('saved/*').map { |file| file[(file.index('/') + 1)...(file.index('.'))]}
-    puts saved_games
-    filename = gets.chomp
-    begin
-      loaded = File.open("./saved/#{filename}.json", 'r') { |file| file.read }
-    rescue
-      puts "Incorrect file name"
-      load_game
-    end
-    game_state = JSON.parse(loaded)
-    @word = game_state.dig("word")
-    @word_arr = game_state.dig("word_arr")
-    @correct_guesses = game_state["correct"]
-    @guessed_letters = game_state["guessed"]
-    @wrong_guesses = game_state["wrong"]
-    @guess_count = game_state["count"]
-  end
-
   def prompt
     puts "Please enter a guess.  You have #{@guess_count} guesses remaining."
-    player_input = gets.chomp
-    if player_input.downcase == 'save'
+    player_input = gets.chomp.downcase 
+    validated = validate_input(player_input)
+    invalid_input if validated == 'invalid'
+    process_input(player_input) if validated == 'valid'
+  end
+
+  def validate_input(player_input)
+    return 'invalid' unless ('a'..'z').include?(player_input) || player_input == 'save' || player_input == 'giveup'
+
+    'valid'
+  end
+
+  def process_input(player_input)
+    if player_input == 'save'
       save_game
-    elsif player_input.downcase == 'giveup'
+      @saved = true
+    elsif player_input == 'giveup'
       give_up
     else
       @guess = player_input
       @guessed_letters << player_input unless @guessed_letters.include?(player_input)
     end
     if @wrong_guesses.include?(@guess)
-    already_guessed unless player_input.downcase == 'save'
-    prompt unless player_input.downcase == 'save'
+      already_guessed unless player_input == 'save' || player_input == 'giveup'
+      prompt unless player_input == 'save' || player_input == 'giveup'
     end
   end
 
-  def save_game
-    game_state = Hash.new
-    game_state[:word] = @word
-    game_state[:word_arr] = @word_arr
-    game_state[:correct] = @correct_guesses
-    game_state[:guessed] = @guessed_letters
-    game_state[:wrong] = @wrong_guesses
-    game_state[:count] = @guess_count
-    puts "Choose a file name for your save game"
-    save_name = gets.chomp
-    File.open("./saved/#{save_name}.json", 'w') { |file| file.puts game_state.to_json}
-    puts "game_saved"
+  def invalid_input
+    puts "That is not a valid letter.  Please try again"
+    prompt
   end
-
 end
